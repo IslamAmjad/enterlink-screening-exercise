@@ -1,0 +1,16 @@
+department,category,description,amount,fiscal_year,approved_by
+Operations,Equipment,"Replacement radios for dispatch center",24500.00,FY2024-25,J. Martinez
+Operations,Training,"Annual certification renewal program",8200.00,FY2024-25,J. Martinez
+Fleet,Maintenance,"Preventive maintenance contract - all vehicles",67800.00,FY2024-25,M. Thompson
+Fleet,Repair," Engine 4 transmission rebuild ",18900.00,FY2024-25,M. Thompson
+Administration,Software,"Records management system annual license",12400.00,FY2024-25,K. Wilson
+Administration,Consulting,,15000.00,FY2024-25,K. Wilson
+Fleet,Purchase,"Replacement utility vehicle",45200.00,FY2024-25,M. Thompson
+Operations,Equipment,"Portable generators (3)",9600.00,FY2024-25,J. Martinez
+Administration,Software,"Budget tracking tool",3200.00,FY2024-25,K. Wilson
+Fleet,Maintenance," Quarterly fluid analysis program ",4800.00,FY2024-25,M. Thompson
+Operations,Training,"Leadership development course",5500.00,FY2024-25,J. Martinez
+Fleet,Repair,"Vehicle 7 brake system overhaul",6300.00,FY2024-25,M. Thompson
+Administration,Consulting,"IT security assessment",,FY2024-25,K. Wilson
+Operations,Equipment,"Updated safety gear - 20 sets",32000.00,FY2024-25,J. Martinez
+Fleet,Purchase,"GPS tracking system installation",8900.00,FY2024-25,M. Thompson
