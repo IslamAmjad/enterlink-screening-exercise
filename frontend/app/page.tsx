@@ -66,6 +66,7 @@ export default function Home() {
       setUploadMessage(
         `Uploaded ${file.name}: ${data.rows_processed} rows processed.`
       );
+      e.target.value = "";
       refreshDocuments();
     } catch (err) {
       setUploadMessage("Upload failed. Please try again.");
