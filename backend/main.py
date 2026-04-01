@@ -76,23 +76,24 @@ async def upload_csv(file: UploadFile = File(...)):
 
     conn = await get_db()
     try:
-        doc_id = await conn.fetchval(
-            "INSERT INTO documents (filename) VALUES ($1) RETURNING id",
-            file.filename,
-        )
+        async with conn.transaction():
+            doc_id = await conn.fetchval(
+                "INSERT INTO documents (filename) VALUES ($1) RETURNING id",
+                file.filename,
+            )
 
-        row_count = 0
-        for row_index, row in enumerate(reader):
-            for field_name, field_value in row.items():
-                await conn.execute(
-                    """INSERT INTO records (document_id, row_index, field_name, field_value)
-                       VALUES ($1, $2, $3, $4)""",
-                    doc_id,
-                    row_index,
-                    field_name.strip(),
-                    field_value,
-                )
-            row_count += 1
+            row_count = 0
+            for row_index, row in enumerate(reader):
+                for field_name, field_value in row.items():
+                    await conn.execute(
+                        """INSERT INTO records (document_id, row_index, field_name, field_value)
+                           VALUES ($1, $2, $3, $4)""",
+                        doc_id,
+                        row_index,
+                        field_name.strip(),
+                        field_value,
+                    )
+                row_count += 1
 
         return {"document_id": doc_id, "rows_processed": row_count}
     finally:
