@@ -37,3 +37,27 @@ Added `e.target.value = ""` right after a successful upload. One line. It clears
 The sequence that breaks it is completely natural: upload a file, notice something's wrong with the data, fix the CSV, try to upload it again. Nothing happens. For a non-technical user that just looks like the product is broken. Clearing the input after success is standard browser behavior for resettable file inputs and costs nothing.
 
 ---
+
+### Problem C: Full Table Scan on Every Search Query
+
+**Root cause**
+
+The search runs `LOWER(field_value) LIKE '%term%'` — a leading-wildcard LIKE. PostgreSQL can't use a standard B-tree index for that pattern because it doesn't know where in the string to start looking. So it scans every row in the `records` table on every query. At 100 rows you don't feel it. At 5,000+ rows it becomes progressively slower with every upload, and there's no ceiling.
+
+**The fix**
+
+Enabled the `pg_trgm` extension and added a GIN index on `LOWER(field_value)` in `init_db()`:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX IF NOT EXISTS idx_records_field_value_trgm
+    ON records USING GIN (LOWER(field_value) gin_trgm_ops);
+```
+
+`pg_trgm` breaks strings into trigrams (overlapping 3-character sequences) and indexes them. PostgreSQL can use this index even for leading-wildcard LIKE queries, so searches become index lookups instead of full scans.
+
+**Why this matters**
+
+This isn't a gradual degradation — it's a query that gets structurally worse the more the product is used. Every CSV upload adds rows, every row makes the next search a little slower. Adding the trigram index is the right fix here without changing the query pattern or pulling in a dedicated search engine. It's also already available in any standard PostgreSQL installation, so there's no new infrastructure dependency.
+
+---

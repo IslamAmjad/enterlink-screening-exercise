@@ -52,6 +52,11 @@ async def init_db():
                 created_at TIMESTAMP DEFAULT NOW()
             )
         """)
+        await conn.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm")
+        await conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_records_field_value_trgm
+            ON records USING GIN (LOWER(field_value) gin_trgm_ops)
+        """)
     finally:
         await conn.close()
 
